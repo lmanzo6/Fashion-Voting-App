@@ -2,13 +2,7 @@
 
 ## Problem statement
 
-- Problem Statement #1: 
-
-    - Young adult fashion enthuasiasts interested in upgrading their fashion style could use the app to discover new fashion styles, connect with the fashion community, and receive ratings and comments based on their uploaded outfits.
-
-- Problem Statement #2:
-
-    - Individuals interested in fashion are able to enhance their style by sharing and receiving feedback on their outfits from other users due to the lower bias that is provided by getting results from others interested in fashion, rather than from friends or family.
+Young adult fashion enthuasiasts interested in upgrading their fashion style could use the app to discover new fashion styles, connect with the fashion community, and receive ratings and comments based on their uploaded outfits.
 
  
 ## Customer
@@ -19,11 +13,7 @@
 - The average person spends over $1,500 a year on new outfits to improve/update their fashion sense, but is it really worth it? When we ask our close friends/family about our outfits, they claim we look great, but is that the truth, or is it just what we want to hear? With our Fashion Voting app, young adult fashion enthusiasts are able to take their fashion to the next level by uploading photos of their outfits to gain a better sense of how their fashion style appeals to other users. Using this system, people will be able to receive feedback on their style and modify it accordingly. Discovering new fashion styles and connecting with the fashion community is the key that this app offers to improve our wardrobes.  
 
 ### Other customer(s) or stakeholder(s)
-- Young adults
-- Fashion students
-- Fashion influencers
-- Fashion brands
-- Investors
+- Young adults, Fashion students, Fashion influencers, Fashion brands, and Investors
 
  
 ## Application type (web app, mobile, website, native client, …)
@@ -31,34 +21,53 @@
 
 ### Tech stack
 
-- UI Design: XML 
-- Programming Language: Java
-- IDE: Android Studios
-- Database: MongoDB
+- XML Guide: [A Complete Guide to Learn XML For Android App Development - GeeksforGeeks](https://www.geeksforgeeks.org/a-complete-guide-to-learn-xml-for-android-app-development/), [Create XML layouts for Android](https://developer.android.com/codelabs/basic-android-kotlin-training-xml-layouts#2),  [Press here in case you don't want to learn XML](https://developer.android.com/studio/write/layout-editorPress)
+- Android Studios Guide: [Developer Guides](https://developer.android.com/guide)
+- MongoDB Guide: [MongoDB Tutorial](https://developer.android.com/guide)  
+
+
+| Member           | Languages | FE Framework | BE Framework | Database |
+|------------------|----------|---------------|--------------|----------|
+| Luis Manzo       | Java     | XML           | Java         | N/A      |
+| Jennifer Duarte  | Java     | N/A           | Java         | N/A      |
+| Kevin Villegas   | Java     | N/A           | Java         | N/A      |
+| Inika Singh      | Java     | N/A           | Java         | N/A      |
+| Sebastian Gembis | Java     | XML           | Java         | MongoDB  |
 
 
 #### Client Tech 
 
-- UI Design: XML 
-- Programming Language: Java
-- IDE: Android Studios
+- Mobile App    
 
 #### Server Tech
 
-- MongoDB
+- UI Design: XML (Frontend)
+- Programming Language: Java (Backend)
+- IDE: Android Studios
+- Database: MongoDB
+
 
 ## Top Application Capabilities (name at least 5)
 
-- Rate outfits/ give comment feedback
-- Receive outfit rating/ comment feedback
+- Rate outfits
+    - Average outfit rating for users
+    - Comment System
+        -  Notifications for comments
+- Receive outfit rating
+    - Comment feedback
 - Upload outfits
+- User Authentication
+    - Social media sign-in
+    - Google sign-in
+    - Profile pictures
 - Save outfits into folder
     - Category folders?
-- tags/ description of event with photo
+- Tags/description of event with photo
+    - Tag system (hashtags)
 
 
 ## Top Two to Three Scenarios
-[see sample scenarios](https://github.com/mschray/IPro497Sample/blob/main/Examples/ScenarioExample.md)
+
 
 ### Your Scenario #1
 - Jean has an important event to attend but he needs to dress to impress. He rushes himself to a local clothing store but the options just overwhelm him. He spots a flyer that mentions they can help him find an outfit in no time so he goes ahead and scans the barcode. He gets influenced by the many different styles and condenses his search by searching specific tags to fit his style but still leave room for creation. He especially likes this one outfit and decides to use that as his guide to purchase the clothing he needs to recreate the look. He wears the outfit to the event and everyone loves it! No more waiting around to find the perfect outfit for an event.
