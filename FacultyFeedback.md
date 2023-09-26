@@ -13,6 +13,12 @@
 ## Week 5 ##
 
 ## Week 6 ##
+- Please make sure stories have working titles (not user story 5)
+- Investor is not really going to interact with functionality
+- Make sure your have stories to represent your scenarios
+- Perhaps draw some wireframes to see that user interface to work
+- Mid-term presentation 10/16
+- Add a story to for the mid-term presentation slide creation
 
 ## Week 7 ##
 
