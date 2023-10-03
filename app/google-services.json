@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "908831280112",
+    "project_id": "fashion-eb26d",
+    "storage_bucket": "fashion-eb26d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908831280112:android:6386fbd54be57bd8b26b35",
+        "android_client_info": {
+          "package_name": "com.example.outfitrateripro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqnWEvDYlJaewChZJYouN2xiG0KPCtNqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
