@@ -5,13 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RegistrationActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/gradient_background">
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Email"
-        android:id="@+id/editTextEmail">
+        android:id="@+id/editTextEmail"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white">
 
     </EditText>
 
@@ -19,7 +22,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Password"
-        android:id="@+id/editTextPassword">
+        android:id="@+id/editTextPassword"
+        android:inputType="textPassword"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white">
 
     </EditText>
 

@@ -5,18 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ChooseLoginOrRegistrationActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/gradient_background">
+
+    <!-- app logo placement holder for now -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher_background"
+        android:contentDescription="App Logo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Outfit Rater"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        />
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/btnChooseLogin"/>
+        android:text="Login with email"
+        android:id="@+id/btnChooseLogin"
+        android:layout_gravity="center_horizontal" />
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register"
-        android:id="@+id/btnChooseRegister"/>
+        android:text="Register with email"
+        android:id="@+id/btnChooseRegister"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>
