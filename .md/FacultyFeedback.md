@@ -29,6 +29,9 @@
   - From there we will random presentation order so you could first or last or anywhere in between
 
 ## Week 8 ##
+- Perhaps on "customer" slide use bullets not long, long block of text
+- Perhaps on "scenarios" slide use bullets not long, long block of text (you can use the notes view to read the text, but the viewer only see the bullets)
+- Your Kanban could include labels to help identify things (like front and backed)
 
 ## Week 9 ##
 
