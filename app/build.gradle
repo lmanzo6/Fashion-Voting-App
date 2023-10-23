@@ -46,11 +46,4 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     //Firebase authentication
     implementation 'com.google.firebase:firebase-auth'
-    //cardview dependency
-    implementation 'androidx.cardview:cardview:1.0.0'
-    //firebase storage
-    implementation("com.google.firebase:firebase-storage")
-    //glide
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
-
 }
