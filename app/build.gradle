@@ -51,6 +51,6 @@ dependencies {
     //firebase storage
     implementation("com.google.firebase:firebase-storage")
     //glide
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
 
 }
