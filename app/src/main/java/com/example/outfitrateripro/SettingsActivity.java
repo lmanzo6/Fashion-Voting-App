@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -143,16 +144,17 @@ public class SettingsActivity extends AppCompatActivity {
         name = mNameField.getText().toString();
         phone = mPhoneField.getText().toString();
 
-        Map userInfo = new HashMap();
+        Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("name", name);
         userInfo.put("phone", phone);
         mUserDatabase.updateChildren(userInfo);
-        if(resultUri != null){
+
+        if (resultUri != null) {
             StorageReference filepath = FirebaseStorage.getInstance().getReference().child("profileImages").child(userId);
             Bitmap bitmap = null;
 
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), resultUri);
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), resultUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -161,32 +163,43 @@ public class SettingsActivity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
             byte[] data = baos.toByteArray();
             UploadTask uploadTask = filepath.putBytes(data);
+
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     finish();
                 }
             });
+
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUrl = Uri.parse(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+                    StorageReference storageReference = taskSnapshot.getStorage();
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String photoLink = uri.toString();
 
+                            Map<String, Object> userInfo = new HashMap<>();
+                            userInfo.put("profileImageUrl", photoLink);
+                            mUserDatabase.updateChildren(userInfo);
 
-
-
-                    Map userInfo = new HashMap();
-                    userInfo.put("profileImageUrl", downloadUrl.toString());
-                    mUserDatabase.updateChildren(userInfo);
-
-                    finish();
-                    return;
+                            finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Handle any errors that occur while getting the download URL.
+                            finish();
+                        }
+                    });
                 }
             });
-        }else{
+        } else {
             finish();
         }
     }
+
 
 
 
