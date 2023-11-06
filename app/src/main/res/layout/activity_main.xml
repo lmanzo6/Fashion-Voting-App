@@ -7,45 +7,30 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
         <Button
-            android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="logoutUser"
             android:text="SignOut"
-            app:layout_constraintStart_toStartOf="@+id/frame"
-            app:layout_constraintTop_toTopOf="@+id/frame" />
+            android:onClick="logoutUser" />
 
         <Button
-            android:id="@+id/button3"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="goToSettings"
             android:text="Settings"
-            app:layout_constraintStart_toStartOf="@+id/frame"
-            app:layout_constraintTop_toTopOf="@+id/frame" />
-
+            android:onClick="goToSettings" />
     </LinearLayout>
-
 
     <com.lorentzos.flingswipe.SwipeFlingAdapterView
         android:id="@+id/frame"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/gradient_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:rotation_degrees="15.5"
-        tools:context=".MyActivity"
-        />
+        tools:context=".MyActivity"/>
 
 </LinearLayout>

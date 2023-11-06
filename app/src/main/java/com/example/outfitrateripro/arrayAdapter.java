@@ -21,6 +21,7 @@ public class arrayAdapter extends ArrayAdapter<cards>{
     public arrayAdapter(Context context, int resourceId, List<cards> items){
         super(context, resourceId, items);
     }
+
     public View getView(int position, View convertView, ViewGroup parent){
         cards card_item = getItem(position);
 
@@ -32,10 +33,19 @@ public class arrayAdapter extends ArrayAdapter<cards>{
         ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
         name.setText(card_item.getName());
-        Glide.with(getContext()).load(card_item.getProfileImageUrl()).into(image);
 
+        if (card_item.getProfileImageUrl().equals("default")) {
+            Glide.with(convertView.getContext())
+                    .load(R.mipmap.ic_launcher)
+                    .into(image);
+        } else {
+            Glide.with(convertView.getContext())
+                    .load(card_item.getProfileImageUrl())
+                    .placeholder(R.mipmap.ic_launcher) // Optionally, provide a placeholder
+                    .error(R.mipmap.ic_launcher) // Optionally, provide an error placeholder
+                    .into(image);
+        }
 
         return convertView;
-
     }
 }
