@@ -180,9 +180,10 @@ public class MainActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.exists() && !snapshot.child("connections").child("nope").hasChild(currentUId)
                                       && !snapshot.child("connections").child("yep").hasChild(currentUId)) {
-                    cards item = new cards(snapshot.getKey(), snapshot.child("name").getValue() != null ? snapshot.child("name").getValue().toString() : "");
+                    cards item = new cards(snapshot.getKey(), snapshot.child("name").getValue().toString(), snapshot.child("profileImageUrl").getValue().toString());
                     rowItems.add(item);
                     arrayAdapter.notifyDataSetChanged();
+
                 }
             }
 
