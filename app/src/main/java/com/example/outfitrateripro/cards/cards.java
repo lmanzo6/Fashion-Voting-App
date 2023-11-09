@@ -1,4 +1,4 @@
-package com.example.outfitrateripro;
+package com.example.outfitrateripro.cards;
 
 public class cards {
     private String userId;

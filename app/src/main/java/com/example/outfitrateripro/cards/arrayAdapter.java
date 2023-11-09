@@ -1,8 +1,6 @@
-package com.example.outfitrateripro;
+package com.example.outfitrateripro.cards;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.outfitrateripro.R;
+import com.example.outfitrateripro.cards.cards;
 
 import java.util.List;
 
