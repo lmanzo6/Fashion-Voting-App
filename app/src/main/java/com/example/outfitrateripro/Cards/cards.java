@@ -1,4 +1,4 @@
-package com.example.outfitrateripro;
+package com.example.outfitrateripro.Cards;
 
 public class cards {
     private String userId;
@@ -23,9 +23,11 @@ public class cards {
     public void setName(String name){
         this.name = name;
     }
+
     public String getProfileImageUrl(){
         return profileImageUrl;
     }
+
     public void setProfileImageUrl(String profileImageUrl){
         this.profileImageUrl = profileImageUrl;
     }

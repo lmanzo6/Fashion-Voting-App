@@ -1,7 +1,6 @@
 package com.example.outfitrateripro;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +11,9 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.outfitrateripro.Cards.arrayAdapter;
+import com.example.outfitrateripro.Cards.cards;
+import com.example.outfitrateripro.Matches.MatchesActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -27,7 +29,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private cards cards_data[];
-    private arrayAdapter arrayAdapter;
+    private com.example.outfitrateripro.Cards.arrayAdapter arrayAdapter;
     private int i;
     private FirebaseAuth mAuth;
 
@@ -202,10 +204,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, ChooseLoginOrRegistrationActivity.class);
         startActivity(intent);
         finish();
+        return;
     }
 
     public void goToSettings(View view) {
         Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
         startActivity(intent);
+        return;
+    }
+
+    public void goToMatches(View view) {
+        Intent intent = new Intent(MainActivity.this, MatchesActivity.class);
+        startActivity(intent);
+        return;
     }
 }
