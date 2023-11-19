@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -41,7 +42,7 @@ import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private EditText mNameField, mPhoneField;
+    private EditText mNameField, mPhoneField, mEmailField;
 
     private Button mBack, mConfirm;
 
@@ -50,7 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mUserDatabase;
 
-    private String userId, name, phone, profileImageUrl, userSex;
+    private String userId, name, phone, profileImageUrl, email, userSex;
 
     private Uri resultUri;
 
@@ -59,8 +60,12 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
         mNameField = (EditText) findViewById(R.id.name);
         mPhoneField = (EditText) findViewById(R.id.phone);
+        mEmailField = findViewById(R.id.email);
 
         mProfileImage = (ImageView) findViewById(R.id.profileImage);
 
@@ -92,7 +97,6 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
-                return;
             }
         });
     }
@@ -107,6 +111,10 @@ public class SettingsActivity extends AppCompatActivity {
                     if(map.get("name")!=null){
                         name = map.get("name").toString();
                         mNameField.setText(name);
+                    }
+                    if(map.get("email")!=null){
+                        email = map.get("email").toString();
+                        mEmailField.setText(email);
                     }
                     if(map.get("phone")!=null){
                         phone = map.get("phone").toString();
@@ -143,10 +151,13 @@ public class SettingsActivity extends AppCompatActivity {
     private void saveUserInformation() {
         name = mNameField.getText().toString();
         phone = mPhoneField.getText().toString();
+        email = mEmailField.getText().toString();
+
 
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("name", name);
         userInfo.put("phone", phone);
+        userInfo.put("email", email);
         mUserDatabase.updateChildren(userInfo);
 
         if (resultUri != null) {
@@ -219,7 +230,5 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-
 
 }

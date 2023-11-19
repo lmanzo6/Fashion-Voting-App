@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/design_default_color_primary_dark"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:padding="12dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/matches_button"
+        android:onClick="goToMatches"
+        android:src="@drawable/ipro_main_back_arrow" />
+
+    <ImageView
+        android:layout_width="162dp"
+        android:layout_height="103dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/logo"
+        android:layout_marginRight="150px"
+        android:padding="12dp"
+        android:src="@drawable/ipro_main_logo_art" />
+
+
+</LinearLayout>

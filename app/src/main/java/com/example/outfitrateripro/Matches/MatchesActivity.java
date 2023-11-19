@@ -1,13 +1,18 @@
 package com.example.outfitrateripro.Matches;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
+import com.example.outfitrateripro.MainActivity;
 import com.example.outfitrateripro.R;
+import com.example.outfitrateripro.SettingsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +34,9 @@ public class MatchesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_matches);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -99,4 +107,11 @@ public class MatchesActivity extends AppCompatActivity {
     private List<MatchesObject> getDataSetMatches() {
         return resultsMatches;
     }
+
+    public void goToMainActivity(View view) {
+        Intent intent = new Intent(MatchesActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+
 }
