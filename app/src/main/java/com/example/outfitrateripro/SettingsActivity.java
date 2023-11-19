@@ -212,4 +212,14 @@ public class SettingsActivity extends AppCompatActivity {
             mProfileImage.setImageURI(resultUri);
         }
     }
+
+    public void logoutUser(View view) {
+        mAuth.signOut();
+        Intent intent = new Intent(SettingsActivity.this, ChooseLoginOrRegistrationActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+
+
 }

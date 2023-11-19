@@ -7,12 +7,15 @@
     tools:context=".SettingsActivity"
     android:orientation="vertical"
     android:padding="20sp">
+
     <ImageView
-        android:layout_width="100sp"
-        android:layout_height="100sp"
         android:id="@+id/profileImage"
-        android:src="@mipmap/ic_launcher"
-        android:layout_marginBottom="20sp" />
+        android:layout_width="152dp"
+        android:layout_height="146dp"
+        android:layout_marginBottom="20sp"
+        android:background="@color/light_gray"
+        android:src="@drawable/ipro_photo_icon" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,5 +42,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/back_button"
         android:text="back"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_btn"
+        android:onClick="logoutUser"
+        android:text="SignOut" />
 
 </LinearLayout>
