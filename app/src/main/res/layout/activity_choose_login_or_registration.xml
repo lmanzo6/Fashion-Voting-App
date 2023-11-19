@@ -11,10 +11,10 @@
 
     <!-- app logo placement holder for now -->
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher_background"
-        android:contentDescription="App Logo" />
+        android:layout_width="match_parent"
+        android:layout_height="478dp"
+        android:contentDescription="App Logo"
+        android:src="@drawable/ipro_main_logo" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,13 +29,15 @@
         android:layout_height="wrap_content"
         android:text="Login with email"
         android:id="@+id/btnChooseLogin"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Register with email"
         android:id="@+id/btnChooseRegister"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        />
 
 </LinearLayout>
