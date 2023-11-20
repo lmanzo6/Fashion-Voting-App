@@ -6,17 +6,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Chat.ChatActivity">
+
+    <LinearLayout
+        android:id="@+id/chatHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@color/design_default_color_primary_dark"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/userProfilePic"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:text="User Name"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+    </LinearLayout>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/chatHeader"
         android:layout_above="@+id/sendLayout">
+
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/recyclerView"
+            android:layout_below= "@+id/chatHeader"
             android:scrollbars="vertical">
+
         </androidx.recyclerview.widget.RecyclerView>
     </androidx.core.widget.NestedScrollView>
+
     <LinearLayout
         android:id="@+id/sendLayout"
         android:layout_width="match_parent"
