@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -47,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button mBack, mConfirm;
 
     private ImageView mProfileImage;
-
+    private ImageButton mBackArrow;
     private FirebaseAuth mAuth;
     private DatabaseReference mUserDatabase;
 
@@ -71,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         mBack = (Button) findViewById(R.id.back_button);
         mConfirm = (Button) findViewById(R.id.confirm_button);
-
+        mBackArrow = (ImageButton) findViewById(R.id.mBackArrow);
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getCurrentUser().getUid();
 
@@ -96,6 +97,12 @@ public class SettingsActivity extends AppCompatActivity {
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                finish();
+            }
+        });
+        mBackArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 finish();
             }
         });
