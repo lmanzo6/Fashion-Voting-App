@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             public void onLeftCardExit(Object dataObject) {
                 cards obj = (cards) dataObject;
                 String userId = obj.getUserId();
+                incrementDislikes(userId);
                 usersDb.child(userId).child("connections").child("nope").child(currentUId).setValue(true);
                 Toast.makeText(MainActivity.this, "Left", Toast.LENGTH_SHORT).show();
             }
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 String userId = obj.getUserId();
                 showCommentDialog(userId);
                 incrementLikes(userId);
+                usersDb.child(userId).child("connections").child("yeps").child(currentUId).setValue(true);
                 Toast.makeText(MainActivity.this, "Right", Toast.LENGTH_SHORT).show();
             }
 
@@ -117,6 +119,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void incrementDislikes(String userId) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("dislikes");
+        userRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentLikes = mutableData.getValue(Integer.class);
+                if (currentLikes == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentLikes + 1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                // Log or handle the completion of the transaction here.
+            }
+        });
+
+
+    }
     private void incrementLikes(String userId) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("likes");
         userRef.runTransaction(new Transaction.Handler() {

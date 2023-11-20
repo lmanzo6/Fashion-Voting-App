@@ -109,6 +109,27 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
         fetchAndDisplayUserLikes();
+        fetchAndDisplayUserDislikes();
+    }
+
+    private void fetchAndDisplayUserDislikes() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("dislikes");
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Integer dislikes = dataSnapshot.getValue(Integer.class);
+                    TextView dislikesTextView = findViewById(R.id.userDislikes); // Make sure you have this TextView in your layout
+                    dislikesTextView.setText("Dislikes: " + (dislikes != null ? dislikes : 0));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("SettingsActivity", "Failed to read dislikes.", databaseError.toException());
+            }
+        });
     }
 
     private void fetchAndDisplayUserLikes() {
