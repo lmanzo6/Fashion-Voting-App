@@ -1,5 +1,6 @@
 package com.example.outfitrateripro.Matches;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.example.outfitrateripro.MainActivity;
@@ -43,7 +45,7 @@ public class MatchesActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setNestedScrollingEnabled(false);
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(false);
         mMatchesLayoutManager = new LinearLayoutManager(MatchesActivity.this);
         mRecyclerView.setLayoutManager(mMatchesLayoutManager);
         mMatchesAdapter = new MatchesAdapter(getDataSetMatches(), MatchesActivity.this);
@@ -92,6 +94,7 @@ public class MatchesActivity extends AppCompatActivity {
 
                         MatchesObject obj = new MatchesObject(userId, name, profileImageUrl);
                         resultsMatches.add(obj);
+                        Log.d(String.valueOf(resultsMatches.size()), "matches size");
                         mMatchesAdapter.notifyDataSetChanged();
                 }
             }

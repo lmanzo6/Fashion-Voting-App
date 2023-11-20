@@ -12,7 +12,7 @@
         android:padding="12dp"
         android:layout_gravity="center"
         android:contentDescription="@string/matches_button"
-        android:onClick="goToMatches"
+        android:onClick="goToMainActivity"
         android:src="@drawable/ipro_main_back_arrow" />
 
     <ImageView
