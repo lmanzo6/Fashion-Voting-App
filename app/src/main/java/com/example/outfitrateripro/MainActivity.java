@@ -4,10 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,7 +29,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private cards cards_data[];
@@ -82,10 +88,11 @@ public class MainActivity extends AppCompatActivity {
             public void onRightCardExit(Object dataObject) {
                 cards obj = (cards) dataObject;
                 String userId = obj.getUserId();
-                usersDb.child(userId).child("connections").child("yeps").child(currentUId).setValue(true);
-                isConnectionMatch(userId);
+                showCommentDialog(userId);
                 Toast.makeText(MainActivity.this, "Right", Toast.LENGTH_SHORT).show();
             }
+
+
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
@@ -106,6 +113,43 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    private void showCommentDialog(final String userId) {
+        final EditText editText = new EditText(MainActivity.this);
+        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Send a Comment")
+                .setView(editText)
+                .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String comment = editText.getText().toString();
+                        if (!comment.isEmpty()) {
+                            sendCommentToUser(userId, comment);
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void sendCommentToUser(String userId, String comment) {
+        String chatKey = FirebaseDatabase.getInstance().getReference().child("Chat").push().getKey();
+
+        // Logic to create a new chat with the first comment
+        DatabaseReference chatDb = FirebaseDatabase.getInstance().getReference().child("Chat").child(chatKey);
+        Map newChat = new HashMap();
+        newChat.put("createdByUser", currentUId);
+        newChat.put("text", comment);
+        chatDb.push().setValue(newChat);
+
+        // Update Firebase to reflect the new chat
+        usersDb.child(userId).child("connections").child("matches").child(currentUId).child("ChatID").setValue(chatKey);
+        usersDb.child(currentUId).child("connections").child("matches").child(userId).child("ChatID").setValue(chatKey);
+
+        Toast.makeText(MainActivity.this, "Comment sent and new chat created!", Toast.LENGTH_SHORT).show();
+    }
+
+
 
     private void isConnectionMatch(String userId) {
         DatabaseReference currentUserConnectionsDb = usersDb.child(currentUId).child("connections").child("yeps").child(userId);
