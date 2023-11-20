@@ -25,6 +25,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 cards obj = (cards) dataObject;
                 String userId = obj.getUserId();
                 showCommentDialog(userId);
+                incrementLikes(userId);
                 Toast.makeText(MainActivity.this, "Right", Toast.LENGTH_SHORT).show();
             }
 
@@ -113,6 +116,28 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    private void incrementLikes(String userId) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("likes");
+        userRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentLikes = mutableData.getValue(Integer.class);
+                if (currentLikes == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentLikes + 1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                // Log or handle the completion of the transaction here.
+            }
+        });
+    }
+
 
     private void showCommentDialog(final String userId) {
         final EditText editText = new EditText(MainActivity.this);
@@ -243,6 +268,8 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        
     }
 
     public void goToSettings(View view) {

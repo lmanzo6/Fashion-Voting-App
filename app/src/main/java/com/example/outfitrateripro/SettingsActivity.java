@@ -7,11 +7,13 @@ import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -77,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
         userId = mAuth.getCurrentUser().getUid();
 
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
-
+        
         getUserInfo();
 
         mProfileImage.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +108,30 @@ public class SettingsActivity extends AppCompatActivity {
                 finish();
             }
         });
+        fetchAndDisplayUserLikes();
     }
+
+    private void fetchAndDisplayUserLikes() {
+        String currentUserId = userId; // Replace this with how you get the logged-in user's ID
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("likes");
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Integer likes = dataSnapshot.getValue(Integer.class);
+                    TextView likesTextView = findViewById(R.id.userLikes);
+                    likesTextView.setText("Likes: " + (likes != null ? likes : 0));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("SettingsActivity", "Failed to read likes.", databaseError.toException());
+            }
+        });
+    }
+
 
 
     private void getUserInfo() {
@@ -151,6 +176,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
 
@@ -165,6 +191,7 @@ public class SettingsActivity extends AppCompatActivity {
         userInfo.put("name", name);
         userInfo.put("phone", phone);
         userInfo.put("email", email);
+        userInfo.put("likes", 0);
         mUserDatabase.updateChildren(userInfo);
 
         if (resultUri != null) {
@@ -216,6 +243,8 @@ public class SettingsActivity extends AppCompatActivity {
         } else {
             finish();
         }
+
+
     }
 
 
