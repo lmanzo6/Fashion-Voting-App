@@ -28,7 +28,8 @@
             android:layout_height="wrap_content"
             android:text="Matches ID"
             android:layout_gravity="center"
-            android:id="@+id/Matchid"/>
+            android:id="@+id/Matchid"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

@@ -6,6 +6,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,17 +42,24 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolders> {
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolders holder, int position) {
         holder.mMessage.setText(chatList.get(position).getMessage());
-        if(chatList.get(position).getCurrentUser()){
-            holder.mMessage.setGravity(Gravity.END);
-            holder.mMessage.setTextColor(Color.parseColor("#404040"));
-            holder.mContainer.setBackgroundColor(Color.parseColor("#F4F4F4"));
 
-        }else{
-            holder.mMessage.setGravity(Gravity.START);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.mContainer.getLayoutParams();
+
+        if(chatList.get(position).getCurrentUser()){
             holder.mMessage.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.mContainer.setBackgroundColor(Color.parseColor("#2DB4C8"));
+            holder.mContainer.setBackgroundResource(R.drawable.bubbles_me);
+            params.addRule(RelativeLayout.ALIGN_PARENT_END);
+            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0); // Remove left alignment
+        } else {
+            holder.mMessage.setTextColor(Color.parseColor("#000000"));
+            holder.mContainer.setBackgroundResource(R.drawable.bubbles_you);
+            params.addRule(RelativeLayout.ALIGN_PARENT_START);
+            params.addRule(RelativeLayout.ALIGN_PARENT_END, 0); // Remove right alignment
         }
+
+        holder.mContainer.setLayoutParams(params);
     }
+
 
     @Override
     public int getItemCount() {

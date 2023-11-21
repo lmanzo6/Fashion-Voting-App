@@ -4,10 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,11 +25,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private cards cards_data[];
@@ -74,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             public void onLeftCardExit(Object dataObject) {
                 cards obj = (cards) dataObject;
                 String userId = obj.getUserId();
+                incrementDislikes(userId);
                 usersDb.child(userId).child("connections").child("nope").child(currentUId).setValue(true);
                 Toast.makeText(MainActivity.this, "Left", Toast.LENGTH_SHORT).show();
             }
@@ -82,10 +91,13 @@ public class MainActivity extends AppCompatActivity {
             public void onRightCardExit(Object dataObject) {
                 cards obj = (cards) dataObject;
                 String userId = obj.getUserId();
+                showCommentDialog(userId);
+                incrementLikes(userId);
                 usersDb.child(userId).child("connections").child("yeps").child(currentUId).setValue(true);
-                isConnectionMatch(userId);
                 Toast.makeText(MainActivity.this, "Right", Toast.LENGTH_SHORT).show();
             }
+
+
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
@@ -106,6 +118,87 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    private void incrementDislikes(String userId) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("dislikes");
+        userRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentLikes = mutableData.getValue(Integer.class);
+                if (currentLikes == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentLikes + 1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                // Log or handle the completion of the transaction here.
+            }
+        });
+
+
+    }
+    private void incrementLikes(String userId) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("likes");
+        userRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentLikes = mutableData.getValue(Integer.class);
+                if (currentLikes == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentLikes + 1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                // Log or handle the completion of the transaction here.
+            }
+        });
+    }
+
+
+    private void showCommentDialog(final String userId) {
+        final EditText editText = new EditText(MainActivity.this);
+        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Send a Comment")
+                .setView(editText)
+                .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String comment = editText.getText().toString();
+                        if (!comment.isEmpty()) {
+                            sendCommentToUser(userId, comment);
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void sendCommentToUser(String userId, String comment) {
+        String chatKey = FirebaseDatabase.getInstance().getReference().child("Chat").push().getKey();
+
+        // Logic to create a new chat with the first comment
+        DatabaseReference chatDb = FirebaseDatabase.getInstance().getReference().child("Chat").child(chatKey);
+        Map newChat = new HashMap();
+        newChat.put("createdByUser", currentUId);
+        newChat.put("text", comment);
+        chatDb.push().setValue(newChat);
+
+        // Update Firebase to reflect the new chat
+        usersDb.child(userId).child("connections").child("matches").child(currentUId).child("ChatID").setValue(chatKey);
+        usersDb.child(currentUId).child("connections").child("matches").child(userId).child("ChatID").setValue(chatKey);
+
+        Toast.makeText(MainActivity.this, "Comment sent and new chat created!", Toast.LENGTH_SHORT).show();
+    }
+
+
 
     private void isConnectionMatch(String userId) {
         DatabaseReference currentUserConnectionsDb = usersDb.child(currentUId).child("connections").child("yeps").child(userId);
@@ -199,6 +292,8 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        
     }
 
     public void goToSettings(View view) {

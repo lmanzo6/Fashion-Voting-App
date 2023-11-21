@@ -2,6 +2,7 @@ package com.example.outfitrateripro.Chat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,7 +11,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.outfitrateripro.Matches.MatchesActivity;
 import com.example.outfitrateripro.Matches.MatchesAdapter;
 import com.example.outfitrateripro.Matches.MatchesObject;
@@ -39,10 +43,14 @@ public class ChatActivity extends AppCompatActivity {
     private String currentUserID, matchId, chatId;
 
     DatabaseReference mDatabaseUser, mDatabaseChat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         matchId = getIntent().getExtras().getString("matchId");
         currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -61,7 +69,7 @@ public class ChatActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mChatAdapter);
 
         mSendEditText = findViewById(R.id.message);
-        mSendButton =findViewById(R.id.send);
+        mSendButton = findViewById(R.id.send);
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,93 +78,139 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+        fetchChatPartnerInformation(matchId);
     }
 
-    private void sendMessage() {
-        String sendMessageText = mSendEditText.getText().toString();
+    private void fetchChatPartnerInformation(String userId) {
+        DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+        userDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String userName = "";
+                    String userProfileImageUrl = "";
+                    if (dataSnapshot.child("name").getValue() != null) {
+                        userName = dataSnapshot.child("name").getValue().toString();
+                    }
+                    if (dataSnapshot.child("profileImageUrl").getValue() != null) {
+                        userProfileImageUrl = dataSnapshot.child("profileImageUrl").getValue().toString();
+                    }
+                    updateHeader(userName, userProfileImageUrl);
+                }
+            }
 
-        if(!sendMessageText.isEmpty()){
-            DatabaseReference newMessageDb = mDatabaseChat.push();
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors.
+            }
+        });
+    }
+        private void sendMessage () {
+            String sendMessageText = mSendEditText.getText().toString();
 
-            Map newMessage = new HashMap();
-            newMessage.put("createdByUser",currentUserID);
-            newMessage.put("text",sendMessageText);
+            if (!sendMessageText.isEmpty()) {
+                DatabaseReference newMessageDb = mDatabaseChat.push();
 
-            newMessageDb.setValue(newMessage);
+                Map newMessage = new HashMap();
+                newMessage.put("createdByUser", currentUserID);
+                newMessage.put("text", sendMessageText);
+
+                newMessageDb.setValue(newMessage);
+            }
+            mSendEditText.setText(null);
         }
-        mSendEditText.setText(null);
-    }
 
-    private void getChatId(){
-        mDatabaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-                    chatId = dataSnapshot.getValue().toString();
-                    mDatabaseChat = mDatabaseChat.child(chatId);
-                    getChatMessages();
+        private void getChatId () {
+            mDatabaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        chatId = dataSnapshot.getValue().toString();
+                        mDatabaseChat = mDatabaseChat.child(chatId);
+                        getChatMessages();
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onCancelled( DatabaseError databaseError) {
+        private void getChatMessages () {
+            mDatabaseChat.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    if (snapshot.exists()) {
+                        String message = "";
+                        String createdByUser = "";
 
-            }
-        });
-    }
-
-    private void getChatMessages() {
-        mDatabaseChat.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (snapshot.exists()){
-                    String message = "";
-                    String createdByUser = "";
-
-                    if(snapshot.child("text").getValue()!= null){
-                        message = snapshot.child("text").getValue().toString();
-                    }
-                    if(snapshot.child("createdByUser").getValue()!= null) {
-                        createdByUser = snapshot.child("createdByUser").getValue().toString();
-                    }
-                    if (message!=null && createdByUser!=null){
-                        Boolean currentUserBoolean = false;
-                        if (createdByUser.equals(currentUserID)){
-                            currentUserBoolean = true;
+                        if (snapshot.child("text").getValue() != null) {
+                            message = snapshot.child("text").getValue().toString();
                         }
-                        ChatObject newMessage = new ChatObject(message,currentUserBoolean);
-                        resultsChat.add(newMessage);
-                        mChatAdapter.notifyDataSetChanged();
+                        if (snapshot.child("createdByUser").getValue() != null) {
+                            createdByUser = snapshot.child("createdByUser").getValue().toString();
+                        }
+                        if (message != null && createdByUser != null) {
+                            Boolean currentUserBoolean = false;
+                            if (createdByUser.equals(currentUserID)) {
+                                currentUserBoolean = true;
+                            }
+                            ChatObject newMessage = new ChatObject(message, currentUserBoolean);
+                            resultsChat.add(newMessage);
+                            mChatAdapter.notifyDataSetChanged();
+                        }
+
                     }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
                 }
-            }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
 
-            }
+                }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-            }
+                }
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
+                }
+            });
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
-    }
+        }
+
+
 
     private ArrayList<ChatObject> resultsChat = new ArrayList<ChatObject>();
+
     private List<ChatObject> getDataSetChat() {
         return resultsChat;
     }
+
+
+    private void updateHeader(String userName, String imageUrl) {
+        TextView userNameTextView = findViewById(R.id.userName);
+        ImageView userProfileImageView = findViewById(R.id.userProfilePic);
+
+        userNameTextView.setText(userName);
+
+        if (!imageUrl.isEmpty() && !imageUrl.equals("default")) {
+            Glide.with(this).load(imageUrl).into(userProfileImageView);
+        } else {
+            // Set a default image or placeholder
+            userProfileImageView.setImageResource(R.mipmap.ic_launcher);
+        }
+    }
+
 }

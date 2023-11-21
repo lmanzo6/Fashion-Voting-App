@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RegistrationActivity"
     android:orientation="vertical"
     android:background="@drawable/gradient_background">
+
+    <ImageView
+        android:id="@+id/imageLogo"
+        android:layout_width="match_parent"
+        android:layout_height="146dp"
+        android:layout_marginBottom="20sp"
+        android:src="@drawable/ipro_main_logo_art" />
+
+    <ImageView
+        android:id="@+id/imageTxt"
+        android:layout_width="match_parent"
+        android:layout_height="146dp"
+        android:layout_marginBottom="20sp"
+        android:src="@drawable/ipro_main_logo_text" />
 
     <EditText
         android:layout_width="match_parent"
@@ -25,14 +38,27 @@
         android:id="@+id/editTextPassword"
         android:inputType="textPassword"
         android:textColorHint="@color/white"
-        android:textColor="@color/white">
+        android:textColor="@color/white"
+        >
 
     </EditText>
-
+<!--add icons to these buttons-->
     <Button
+        android:layout_marginTop="300px"
+        android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/btnLogin"/>
+        android:background="@drawable/round_btn"
+        android:text="Login" />
+
+    <Button
+        android:layout_marginTop="30px"
+        android:id="@+id/btnChooseRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_btn"
+        android:onClick="goToRegistration"
+        android:text="Did you mean to register instead? Click Here"
+        tools:ignore="OnClick" />
 
 </LinearLayout>

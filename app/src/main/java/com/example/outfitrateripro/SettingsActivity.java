@@ -7,15 +7,19 @@ import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -41,16 +45,16 @@ import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private EditText mNameField, mPhoneField;
+    private EditText mNameField, mPhoneField, mEmailField;
 
     private Button mBack, mConfirm;
 
     private ImageView mProfileImage;
-
+    private ImageButton mBackArrow;
     private FirebaseAuth mAuth;
     private DatabaseReference mUserDatabase;
 
-    private String userId, name, phone, profileImageUrl, userSex;
+    private String userId, name, phone, profileImageUrl, email, userSex;
 
     private Uri resultUri;
 
@@ -59,19 +63,23 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
         mNameField = (EditText) findViewById(R.id.name);
         mPhoneField = (EditText) findViewById(R.id.phone);
+        mEmailField = findViewById(R.id.email);
 
         mProfileImage = (ImageView) findViewById(R.id.profileImage);
 
         mBack = (Button) findViewById(R.id.back_button);
         mConfirm = (Button) findViewById(R.id.confirm_button);
-
+        mBackArrow = (ImageButton) findViewById(R.id.mBackArrow);
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getCurrentUser().getUid();
 
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
-
+        
         getUserInfo();
 
         mProfileImage.setOnClickListener(new View.OnClickListener() {
@@ -92,10 +100,59 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
-                return;
+            }
+        });
+        mBackArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        fetchAndDisplayUserLikes();
+        fetchAndDisplayUserDislikes();
+    }
+
+    private void fetchAndDisplayUserDislikes() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("dislikes");
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Integer dislikes = dataSnapshot.getValue(Integer.class);
+                    TextView dislikesTextView = findViewById(R.id.userDislikes); // Make sure you have this TextView in your layout
+                    dislikesTextView.setText("Dislikes: " + (dislikes != null ? dislikes : 0));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("SettingsActivity", "Failed to read dislikes.", databaseError.toException());
             }
         });
     }
+
+    private void fetchAndDisplayUserLikes() {
+        String currentUserId = userId; // Replace this with how you get the logged-in user's ID
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("likes");
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Integer likes = dataSnapshot.getValue(Integer.class);
+                    TextView likesTextView = findViewById(R.id.userLikes);
+                    likesTextView.setText("Likes: " + (likes != null ? likes : 0));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("SettingsActivity", "Failed to read likes.", databaseError.toException());
+            }
+        });
+    }
+
 
 
     private void getUserInfo() {
@@ -107,6 +164,10 @@ public class SettingsActivity extends AppCompatActivity {
                     if(map.get("name")!=null){
                         name = map.get("name").toString();
                         mNameField.setText(name);
+                    }
+                    if(map.get("email")!=null){
+                        email = map.get("email").toString();
+                        mEmailField.setText(email);
                     }
                     if(map.get("phone")!=null){
                         phone = map.get("phone").toString();
@@ -136,6 +197,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
 
@@ -143,10 +205,14 @@ public class SettingsActivity extends AppCompatActivity {
     private void saveUserInformation() {
         name = mNameField.getText().toString();
         phone = mPhoneField.getText().toString();
+        email = mEmailField.getText().toString();
+
 
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("name", name);
         userInfo.put("phone", phone);
+        userInfo.put("email", email);
+        userInfo.put("likes", 0);
         mUserDatabase.updateChildren(userInfo);
 
         if (resultUri != null) {
@@ -198,6 +264,8 @@ public class SettingsActivity extends AppCompatActivity {
         } else {
             finish();
         }
+
+
     }
 
 
@@ -219,7 +287,5 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-
 
 }
