@@ -11,18 +11,18 @@
 
     <!-- app logo placement holder for now -->
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="478dp"
+        android:layout_width="295dp"
+        android:layout_height="242dp"
         android:contentDescription="App Logo"
-        android:src="@drawable/ipro_main_logo" />
+        android:src="@drawable/ipro_main_logo_art" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Outfit Rater"
-        android:textSize="24sp"
-        android:textColor="#FFFFFF"
-        />
+    <ImageView
+        android:layout_width="260dp"
+        android:layout_height="233dp"
+        android:contentDescription="App Logo"
+        android:src="@drawable/ipro_main_logo_text" />
+
+
 
     <Button
         android:layout_width="wrap_content"
