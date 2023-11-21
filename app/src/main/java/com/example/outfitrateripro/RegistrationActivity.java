@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
     private Button btnRegister;
-    private EditText editTextEmail, editTextPassword, editTextFullName;
+    private EditText editTextEmail, editTextPassword, editTextFullName, editTextConfirmPassword;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
     private RadioGroup radioGroup;
@@ -58,6 +58,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
+        editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
 
         radioGroup = findViewById(R.id.radioGroup);
 
@@ -75,12 +76,17 @@ public class RegistrationActivity extends AppCompatActivity {
             // parsing user information
             final String userEmail = editTextEmail.getText().toString();
             final String userPassword = editTextPassword.getText().toString();
+            final String confirmPassword = editTextConfirmPassword.getText().toString();
             final String userFullName = editTextFullName.getText().toString();
+
+            if (!userPassword.equals(confirmPassword)) {
+                Toast.makeText(RegistrationActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             firebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                     // check if user creation is successful
                     if (!task.isSuccessful()){
                         Toast.makeText(RegistrationActivity.this, "Sign-up error", Toast.LENGTH_SHORT).show();
                     }
@@ -90,12 +96,13 @@ public class RegistrationActivity extends AppCompatActivity {
                         Map userInfo = new HashMap<>();
                         userInfo.put("name", userFullName);
                         userInfo.put("sex", radioButton.getText().toString());
+                        userInfo.put("email", userEmail); // Add this line to store the email
                         userInfo.put("profileImageUrl", "default");
                         currentUserDb.updateChildren(userInfo);
-
                     }
                 }
             });
+
         });
     }
 
