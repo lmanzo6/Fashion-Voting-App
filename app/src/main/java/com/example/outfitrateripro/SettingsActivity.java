@@ -1,18 +1,23 @@
 package com.example.outfitrateripro;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -264,10 +270,71 @@ public class SettingsActivity extends AppCompatActivity {
         } else {
             finish();
         }
+    }
+    private void showClothingInfoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+        builder.setTitle("Clothing Information");
 
+        // Layout to hold the input fields
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
 
+        // Input field for clothing description
+        final EditText inputDescription = new EditText(this);
+        inputDescription.setInputType(InputType.TYPE_CLASS_TEXT);
+        inputDescription.setHint("Describe where you bought the clothing");
+        layout.addView(inputDescription);
+
+        // Dropdown for clothing categories
+        final Spinner categorySpinner = new Spinner(this);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"Party Night", "Business Casual", "Business Formal", "Streetwear", "Gym Wear"});
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(adapter);
+        layout.addView(categorySpinner);
+
+        builder.setView(layout);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String description = inputDescription.getText().toString();
+                String category = categorySpinner.getSelectedItem().toString();
+                handleClothingInfo(description, category);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
+    private void handleClothingInfo(String description, String category) {
+        // Example: Update user's profile information in Firebase database
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("clothingDescription", description);
+        userInfo.put("clothingCategory", category);
+
+        mUserDatabase.updateChildren(userInfo)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Successfully updated the user's profile
+                        Toast.makeText(SettingsActivity.this, "Clothing info updated", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle the failure
+                        Toast.makeText(SettingsActivity.this, "Failed to update clothing info", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
 
 
@@ -275,9 +342,11 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1 && resultCode == Activity.RESULT_OK){
+            showClothingInfoDialog();
             final Uri imageUri = data.getData();
             resultUri = imageUri;
             mProfileImage.setImageURI(resultUri);
+
         }
     }
 

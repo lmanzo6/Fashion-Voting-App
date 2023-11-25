@@ -33,14 +33,27 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesViewHolders> {
         return rcv;
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull MatchesViewHolders holder, int position) {
-        holder.mMatchId.setText(matchesList.get(position).getUserId());
-        holder.mMatchName.setText(matchesList.get(position).getName());
-        if(!matchesList.get(position).getProfileImageUrl().equals("default")) {
-            Glide.with(context).load(matchesList.get(position).getProfileImageUrl()).into(holder.mMatchImage);
+        MatchesObject currentMatch = matchesList.get(position);
+        holder.mMatchId.setText(currentMatch.getUserId());
+        holder.mMatchName.setText(currentMatch.getName());
+        holder.latestMessageTextView.setText(currentMatch.getLatestMessage());
+        holder.latestMessageTimestampTextView.setText(currentMatch.getLatestMessageTimestamp());
+
+
+        if(!currentMatch.getProfileImageUrl().equals("default") && currentMatch.getProfileImageUrl() != null) {
+            Glide.with(context)
+                    .load(currentMatch.getProfileImageUrl())
+                    .into(holder.mMatchImage);
+        } else {
+            // Set a default image or placeholder
+            holder.mMatchImage.setImageResource(R.mipmap.ic_launcher); // Replace 'default_image' with your actual default image resource
         }
     }
+
+
 
     @Override
     public int getItemCount() {

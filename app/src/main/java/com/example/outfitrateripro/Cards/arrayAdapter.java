@@ -30,6 +30,9 @@ public class arrayAdapter extends ArrayAdapter<cards>{
 
         TextView name = (TextView) convertView.findViewById(R.id.name);
         ImageView image = (ImageView) convertView.findViewById(R.id.image);
+        TextView clothingDescription = (TextView) convertView.findViewById(R.id.clothingDescription); // New
+        TextView clothingCategory = (TextView) convertView.findViewById(R.id.clothingCategory); // New
+
 
         name.setText(card_item.getName());
 
@@ -44,6 +47,8 @@ public class arrayAdapter extends ArrayAdapter<cards>{
                     .error(R.mipmap.ic_launcher) // Optionally, provide an error placeholder
                     .into(image);
         }
+        clothingDescription.setText(card_item.getClothingDescription()); // New
+        clothingCategory.setText(card_item.getClothingCategory()); // New
 
         return convertView;
     }

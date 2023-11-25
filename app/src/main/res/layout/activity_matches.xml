@@ -7,12 +7,13 @@
     tools:context=".Matches.MatchesActivity">
 
     <include layout="@layout/header_layout_matches" />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="300px"
-            android:scrollbars="vertical">
 
-        </androidx.recyclerview.widget.RecyclerView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300px"
+        android:scrollbars="vertical">
+
+    </androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

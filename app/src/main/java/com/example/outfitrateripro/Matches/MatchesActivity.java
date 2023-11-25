@@ -22,8 +22,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MatchesActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -51,9 +54,24 @@ public class MatchesActivity extends AppCompatActivity {
         mMatchesAdapter = new MatchesAdapter(getDataSetMatches(), MatchesActivity.this);
         mRecyclerView.setAdapter(mMatchesAdapter);
 
+        fetchMatchesData();
+
+
+    }
+    protected void onResume() {
+        super.onResume();
+        fetchMatchesData(); // Call this method to refresh data when the activity resumes
+    }
+
+    private void fetchMatchesData() {
+        // Clear existing data
+        resultsMatches.clear();
+        if (mMatchesAdapter != null) {
+            mMatchesAdapter.notifyDataSetChanged();
+        }
+
+        // Fetch data logic
         getUserMatchId();
-
-
     }
 
     private void getUserMatchId() {
@@ -78,24 +96,51 @@ public class MatchesActivity extends AppCompatActivity {
 
     private void FetchMatchInformation(String key) {
         DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("Users").child(key);
+        DatabaseReference chatDb = FirebaseDatabase.getInstance().getReference().child("Chat");
         userDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                     String userId = snapshot.getKey();
-                    String name = "";
-                    String profileImageUrl = "";
-                    if(snapshot.child("name").getValue() !=null){
-                        name = snapshot.child("name").getValue().toString();
-                    }
-                    if(snapshot.child("profileImageUrl").getValue() !=null) {
-                        profileImageUrl = snapshot.child("profileImageUrl").getValue().toString();
-                    }
+                    String name = snapshot.child("name").getValue(String.class);
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class) != null ? snapshot.child("profileImageUrl").getValue(String.class) : "default";
 
-                        MatchesObject obj = new MatchesObject(userId, name, profileImageUrl);
-                        resultsMatches.add(obj);
-                        Log.d(String.valueOf(resultsMatches.size()), "matches size");
-                        mMatchesAdapter.notifyDataSetChanged();
+                    String chatId = snapshot.child("connections").child("matches").child(currentUserID).child("ChatID").getValue(String.class);
+                    chatDb.child(chatId).orderByChild("timestamp").limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Log.d("ChatDebug", "DataSnapshot from Firebase: " + dataSnapshot.toString());
+
+                            String latestMessage = "No messages";
+                            String timestamp = "Unknown";
+                            if (dataSnapshot.exists()) {
+                                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                                    latestMessage = childSnapshot.child("text").getValue(String.class);
+                                    if (childSnapshot.hasChild("timestamp")) {
+                                        Long rawTimestamp = childSnapshot.child("timestamp").getValue(Long.class);
+                                        timestamp = formatTimestamp(rawTimestamp);
+                                    }
+                                }
+                            }
+
+                            boolean exists = false;
+                            for (MatchesObject match : resultsMatches) {
+                                if (match.getUserId().equals(userId)) {
+                                    exists = true;
+                                    break;
+                                }
+                            }
+                            if (!exists) {
+                                MatchesObject obj = new MatchesObject(userId, name, profileImageUrl, latestMessage, timestamp);
+                                resultsMatches.add(obj);
+                                Log.d(String.valueOf(resultsMatches.size()), "matches size");
+                                mMatchesAdapter.notifyDataSetChanged();
+                            }
+                        }
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle possible errors.
+                        }
+                    });
                 }
             }
 
@@ -104,6 +149,12 @@ public class MatchesActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private String formatTimestamp(Long rawTimestamp) {
+        if (rawTimestamp == null) return "Unknown";
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault());
+        return sdf.format(new Date(rawTimestamp));
     }
 
     private ArrayList<MatchesObject> resultsMatches = new ArrayList<MatchesObject>();

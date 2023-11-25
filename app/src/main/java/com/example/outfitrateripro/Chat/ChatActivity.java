@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class ChatActivity extends AppCompatActivity {
                 Map newMessage = new HashMap();
                 newMessage.put("createdByUser", currentUserID);
                 newMessage.put("text", sendMessageText);
-
+                newMessage.put("timestamp", ServerValue.TIMESTAMP);
                 newMessageDb.setValue(newMessage);
             }
             mSendEditText.setText(null);

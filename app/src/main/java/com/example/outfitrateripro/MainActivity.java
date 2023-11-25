@@ -270,8 +270,10 @@ public class MainActivity extends AppCompatActivity {
                                 profileImageUrl = imageUrl;
                             }
                         }
+                        String clothingDescription = dataSnapshot.child("clothingDescription").exists() ? dataSnapshot.child("clothingDescription").getValue(String.class) : "Not specified";
+                        String clothingCategory = dataSnapshot.child("clothingCategory").exists() ? dataSnapshot.child("clothingCategory").getValue(String.class) : "Not specified";
 
-                        cards item = new cards(dataSnapshot.getKey(), dataSnapshot.child("name").getValue().toString(), profileImageUrl);
+                        cards item = new cards(dataSnapshot.getKey(), dataSnapshot.child("name").getValue().toString(), profileImageUrl, clothingDescription, clothingCategory);
                         rowItems.add(item);
                         arrayAdapter.notifyDataSetChanged();
                     }

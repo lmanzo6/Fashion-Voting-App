@@ -12,16 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.outfitrateripro.Chat.ChatActivity;
 import com.example.outfitrateripro.R;
 
+import java.text.BreakIterator;
+
 public class MatchesViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
-    public TextView mMatchId, mMatchName;
+    public TextView mMatchId, mMatchName, latestMessageTextView, latestMessageTimestampTextView;
     public ImageView mMatchImage;
+
+
     public MatchesViewHolders(@NonNull View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);
-
+        latestMessageTimestampTextView = (TextView) itemView.findViewById(R.id.Timestamp);
         mMatchId = (TextView) itemView.findViewById(R.id.Matchid);
         mMatchName = (TextView) itemView.findViewById(R.id.MatchName);
-
+        latestMessageTextView = (TextView) itemView.findViewById(R.id.LatestMessage);
         mMatchImage = (ImageView) itemView.findViewById(R.id.MatchImage);
     }
 
