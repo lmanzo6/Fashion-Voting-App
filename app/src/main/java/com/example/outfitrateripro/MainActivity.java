@@ -90,33 +90,45 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRightCardExit(Object dataObject) {
                 cards obj = (cards) dataObject;
-                String userId = obj.getUserId();
-                DatabaseReference swipedUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+                String swipedUserId = obj.getUserId();
+                String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // ID of the swiping user
+
+                DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+                DatabaseReference swipedUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child(swipedUserId);
+
                 swipedUserDb.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             Boolean dmEnabled = dataSnapshot.child("dmEnabled").getValue(Boolean.class);
-                            Integer likes = dataSnapshot.child("likes").getValue(Integer.class);
-                            Log.d("DMCheck", "DM Enabled: " + dmEnabled + ", Likes: " + likes);
 
-                            if (dmEnabled != null && !dmEnabled && (likes == null || likes < 1000)) {
-                                // DMs are off and likes are less than 1000 - do not show AlertDialog
-                                Toast.makeText(MainActivity.this, "User not accepting messages", Toast.LENGTH_SHORT).show();
-                            } else {
-                                // Else, show the AlertDialog for message sending
-                                showCommentDialog(userId);
-                            }
+                            currentUserDb.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Integer likes = dataSnapshot.child("likes").getValue(Integer.class);
+
+                                    if ((dmEnabled != null && dmEnabled) || (likes != null && likes >= 1000)) {
+                                        showCommentDialog(swipedUserId);
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "User not accepting messages", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.d("SwipeDebug", "Error fetching likes data: " + databaseError.getMessage());
+                                }
+                            });
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        Log.d("SwipeDebug", "Error fetching DM data: " + databaseError.getMessage());
                     }
                 });
-                incrementLikes(userId);
-                usersDb.child(userId).child("connections").child("yeps").child(currentUId).setValue(true);
+                incrementLikes(swipedUserId);
+                usersDb.child(swipedUserId).child("connections").child("yeps").child(currentUId).setValue(true);
             }
 
 
