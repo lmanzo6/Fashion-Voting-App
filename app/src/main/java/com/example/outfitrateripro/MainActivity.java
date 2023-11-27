@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
@@ -189,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
         Map newChat = new HashMap();
         newChat.put("createdByUser", currentUId);
         newChat.put("text", comment);
+        newChat.put("timestamp", ServerValue.TIMESTAMP);
         chatDb.push().setValue(newChat);
 
         // Update Firebase to reflect the new chat

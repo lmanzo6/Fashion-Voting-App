@@ -24,6 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -133,6 +135,7 @@ public class MatchesActivity extends AppCompatActivity {
                             if (!exists) {
                                 MatchesObject obj = new MatchesObject(userId, name, profileImageUrl, latestMessage, timestamp);
                                 resultsMatches.add(obj);
+                                sortMatchesByTimestamp();
                                 Log.d(String.valueOf(resultsMatches.size()), "matches size");
                                 mMatchesAdapter.notifyDataSetChanged();
                             }
@@ -147,6 +150,14 @@ public class MatchesActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+    }
+    private void sortMatchesByTimestamp() {
+        Collections.sort(resultsMatches, new Comparator<MatchesObject>() {
+            @Override
+            public int compare(MatchesObject o1, MatchesObject o2) {
+                return o2.getLatestMessageTimestamp().compareTo(o1.getLatestMessageTimestamp()); // Descending order
             }
         });
     }
