@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
-                // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
                 rowItems.remove(0);
                 arrayAdapter.notifyDataSetChanged();
@@ -92,10 +91,32 @@ public class MainActivity extends AppCompatActivity {
             public void onRightCardExit(Object dataObject) {
                 cards obj = (cards) dataObject;
                 String userId = obj.getUserId();
-                showCommentDialog(userId);
+                DatabaseReference swipedUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+                swipedUserDb.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            Boolean dmEnabled = dataSnapshot.child("dmEnabled").getValue(Boolean.class);
+                            Integer likes = dataSnapshot.child("likes").getValue(Integer.class);
+                            Log.d("DMCheck", "DM Enabled: " + dmEnabled + ", Likes: " + likes);
+
+                            if (dmEnabled != null && !dmEnabled && (likes == null || likes < 1000)) {
+                                // DMs are off and likes are less than 1000 - do not show AlertDialog
+                                Toast.makeText(MainActivity.this, "User not accepting messages", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // Else, show the AlertDialog for message sending
+                                showCommentDialog(userId);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
                 incrementLikes(userId);
                 usersDb.child(userId).child("connections").child("yeps").child(currentUId).setValue(true);
-                Toast.makeText(MainActivity.this, "Right", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -109,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        // Optionally add an OnItemClickListener
+
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
@@ -136,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                // Log or handle the completion of the transaction here.
             }
         });
 
@@ -158,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                // Log or handle the completion of the transaction here.
             }
         });
     }

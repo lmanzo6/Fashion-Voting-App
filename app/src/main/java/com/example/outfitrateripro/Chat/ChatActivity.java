@@ -209,7 +209,6 @@ public class ChatActivity extends AppCompatActivity {
         if (!imageUrl.isEmpty() && !imageUrl.equals("default")) {
             Glide.with(this).load(imageUrl).into(userProfileImageView);
         } else {
-            // Set a default image or placeholder
             userProfileImageView.setImageResource(R.mipmap.ic_launcher);
         }
     }

@@ -13,11 +13,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,7 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText mNameField, mPhoneField, mEmailField;
 
     private Button mBack, mConfirm;
-
+    private Switch dmToggle;
     private ImageView mProfileImage;
     private ImageButton mBackArrow;
     private FirebaseAuth mAuth;
@@ -116,6 +118,61 @@ public class SettingsActivity extends AppCompatActivity {
         });
         fetchAndDisplayUserLikes();
         fetchAndDisplayUserDislikes();
+        // Initialize the switch
+        dmToggle = findViewById(R.id.dmToggle);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+
+        // Fetch the current dmEnabled value and update the switch
+        currentUserDb.child("dmEnabled").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Boolean dmEnabled = dataSnapshot.getValue(Boolean.class);
+                    if (dmEnabled != null) {
+                        dmToggle.setChecked(dmEnabled);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors
+            }
+        });
+
+        // Load current DM setting
+        loadDMSetting();
+
+        // Set a listener on the DM toggle switch
+        dmToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Reference the correct path for the dmEnabled field
+                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+
+                // Update the dmEnabled field
+                currentUserDb.child("dmEnabled").setValue(isChecked);
+            }
+        });
+
+    }
+
+    private void loadDMSetting() {
+        mUserDatabase.child(userId).child("dmEnabled").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Boolean dmEnabled = dataSnapshot.getValue(Boolean.class);
+                    dmToggle.setChecked(dmEnabled != null && dmEnabled);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     private void fetchAndDisplayUserDislikes() {
@@ -126,7 +183,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     Integer dislikes = dataSnapshot.getValue(Integer.class);
-                    TextView dislikesTextView = findViewById(R.id.userDislikes); // Make sure you have this TextView in your layout
+                    TextView dislikesTextView = findViewById(R.id.userDislikes);
                     dislikesTextView.setText("Dislikes: " + (dislikes != null ? dislikes : 0));
                 }
             }
@@ -139,7 +196,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void fetchAndDisplayUserLikes() {
-        String currentUserId = userId; // Replace this with how you get the logged-in user's ID
+        String currentUserId = userId;
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("likes");
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -261,7 +318,6 @@ public class SettingsActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            // Handle any errors that occur while getting the download URL.
                             finish();
                         }
                     });
@@ -314,7 +370,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void handleClothingInfo(String description, String category) {
-        // Example: Update user's profile information in Firebase database
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("clothingDescription", description);
         userInfo.put("clothingCategory", category);

@@ -49,12 +49,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolders> {
             holder.mMessage.setTextColor(Color.parseColor("#FFFFFF"));
             holder.mContainer.setBackgroundResource(R.drawable.bubbles_me);
             params.addRule(RelativeLayout.ALIGN_PARENT_END);
-            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0); // Remove left alignment
+            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
         } else {
             holder.mMessage.setTextColor(Color.parseColor("#000000"));
             holder.mContainer.setBackgroundResource(R.drawable.bubbles_you);
             params.addRule(RelativeLayout.ALIGN_PARENT_START);
-            params.addRule(RelativeLayout.ALIGN_PARENT_END, 0); // Remove right alignment
+            params.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
         }
 
         holder.mContainer.setLayoutParams(params);

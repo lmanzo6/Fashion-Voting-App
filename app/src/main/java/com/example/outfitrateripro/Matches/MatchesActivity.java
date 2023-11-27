@@ -62,7 +62,7 @@ public class MatchesActivity extends AppCompatActivity {
     }
     protected void onResume() {
         super.onResume();
-        fetchMatchesData(); // Call this method to refresh data when the activity resumes
+        fetchMatchesData();
     }
 
     private void fetchMatchesData() {
@@ -72,7 +72,6 @@ public class MatchesActivity extends AppCompatActivity {
             mMatchesAdapter.notifyDataSetChanged();
         }
 
-        // Fetch data logic
         getUserMatchId();
     }
 

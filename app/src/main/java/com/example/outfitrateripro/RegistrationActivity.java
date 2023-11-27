@@ -98,6 +98,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         userInfo.put("sex", radioButton.getText().toString());
                         userInfo.put("email", userEmail); // Add this line to store the email
                         userInfo.put("profileImageUrl", "default");
+                        userInfo.put("dmEnabled", true);
                         currentUserDb.updateChildren(userInfo);
                     }
                 }

@@ -30,8 +30,8 @@ public class arrayAdapter extends ArrayAdapter<cards>{
 
         TextView name = (TextView) convertView.findViewById(R.id.name);
         ImageView image = (ImageView) convertView.findViewById(R.id.image);
-        TextView clothingDescription = (TextView) convertView.findViewById(R.id.clothingDescription); // New
-        TextView clothingCategory = (TextView) convertView.findViewById(R.id.clothingCategory); // New
+        TextView clothingDescription = (TextView) convertView.findViewById(R.id.clothingDescription);
+        TextView clothingCategory = (TextView) convertView.findViewById(R.id.clothingCategory);
 
 
         name.setText(card_item.getName());
@@ -43,12 +43,12 @@ public class arrayAdapter extends ArrayAdapter<cards>{
         } else {
             Glide.with(convertView.getContext())
                     .load(card_item.getProfileImageUrl())
-                    .placeholder(R.mipmap.ic_launcher) // Optionally, provide a placeholder
-                    .error(R.mipmap.ic_launcher) // Optionally, provide an error placeholder
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
                     .into(image);
         }
-        clothingDescription.setText(card_item.getClothingDescription()); // New
-        clothingCategory.setText(card_item.getClothingCategory()); // New
+        clothingDescription.setText(card_item.getClothingDescription());
+        clothingCategory.setText(card_item.getClothingCategory());
 
         return convertView;
     }
